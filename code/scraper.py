@@ -111,7 +111,7 @@ def run_playwright(url):
             tz = pytz.timezone("America/Vancouver")
 
             # ** SET YOUR CURRENT BOOKING ACCORDING TO TIMEZONE **
-            user_booking = tz.localize(datetime.strptime("Tuesday, September 23, 2025 11:15 AM", "%A, %B %d, %Y %I:%M %p"))
+            user_booking = tz.localize(datetime.strptime("Friday, August 15, 2025 1:15 PM", "%A, %B %d, %Y %I:%M %p"))
 
             # ** A LIST TO STORE EARLIER APPTS **
             earlier_appts = []

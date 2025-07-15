@@ -7,29 +7,38 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SCRIPT_PATH = os.path.join(os.path.dirname(__file__), "discord-notifier.py")
+# Paths to your scripts
+BASE_DIR = os.path.dirname(__file__)
+SCRAPER_SCRIPT = os.path.join(BASE_DIR, "scraper.py")
+NOTIFIER_SCRIPT = os.path.join(BASE_DIR, "discord-notifier.py")
 
-def run_notifier():
-    print(f"[🔔] Triggered at {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    result = subprocess.run(["python3", SCRIPT_PATH], capture_output=True, text=True)
-    if result.returncode == 0:
-        print("[✔] Discord Notifier completed.\n")
+def run_scraper_and_notifier():
+    print(f"[🔁] Checking appointments...")
+
+    # Run scraper.py to get latest data
+    result1 = subprocess.run(["python3", SCRAPER_SCRIPT], capture_output=True, text=True)
+    if result1.returncode == 0:
+        print("[✔] Scraper completed.")
     else:
-        print(f"[X] Discord Notifier failed:\n{result.stderr}\n")
+        print(f"[X] Scraper failed:\n{result1.stderr}\n")
+        return
 
-# schedule notifs
-schedule.every().day.at("02:00").do(run_notifier)
-schedule.every().day.at("05:00").do(run_notifier)
-schedule.every().day.at("07:00").do(run_notifier)
-schedule.every().day.at("09:00").do(run_notifier)
-schedule.every().day.at("12:00").do(run_notifier)
-schedule.every().day.at("14:00").do(run_notifier)
-schedule.every().day.at("17:00").do(run_notifier)
-schedule.every().day.at("00:00").do(run_notifier)
+    # Then run notifier.py to check new appts and notify
+    result2 = subprocess.run(["python3", NOTIFIER_SCRIPT], capture_output=True, text=True)
+    if result2.returncode == 0:
+        print("[✔] Notifier completed.")
+    else:
+        print(f"[X] Notifier failed:\n{result2.stderr}\n")
 
-print("🗓 Scheduler running... Will notify at 2:00 AM, 5:00 AM, 7:00 AM, 9:00AM, 12:00 PM, 2:00PM, 5:00PM and midnight.\n")
+# Run once at startup (optional)
+run_scraper_and_notifier()
 
-# run FOREVER!!!
+# Schedule every hour
+schedule.every().hour.do(run_scraper_and_notifier)
+
+print("🕒 Scheduler active. Checking for updates hourly.\n")
+
+# Loop forever
 while True:
     schedule.run_pending()
     time.sleep(30)
