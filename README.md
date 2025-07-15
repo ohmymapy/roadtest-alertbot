@@ -14,7 +14,7 @@ Python · Playwright · Discord API · .env · Scheduler
 # Getting Started:
 1. Clone the repo
 ```
-git clone https://github.com/your-username/RoadTest-AlertBot.git
+git clone https://github.com/ohmymapy/RoadTest-AlertBot.git
 cd RoadTest-AlertBot/code
 ```
 
